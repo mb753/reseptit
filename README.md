@@ -2,6 +2,8 @@
 
 Tämä reseptisovellus on harjoitustyö liittyen kurssiin [Tietokannat ja web-ohjelmointi](https://hy-tikawe.github.io/materiaali/). Sovelluksen aihe ja toiminnot ovat kurssimateriaalissa ehdotetun mukaiset.
 
+HUOM. Sovellus ei ole vielä valmis.
+
 ## Sovelluksen toiminnot
 
 * Sovelluksessa käyttäjät pystyvät jakamaan ruokareseptejään. Reseptissä lukee tarvittavat ainekset ja valmistusohje.
