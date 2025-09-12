@@ -8,19 +8,22 @@
 
 <body>
   <h1>Reseptit</h1>
+  
   <p class="notification">
     {{ message }}
   </p>
+  
   <p>
     Reseptit
     <ul>
       {% for recipe in recipes %}
         <li>
-          {{ recipe.title }} (lisännyt {{ recipe.username }})
+          <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a> (lisännyt {{ recipe.username }})
         </li>
       {% endfor %}
     </ul>
   </p>
+
 </body>
 
 </html>

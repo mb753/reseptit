@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    recipes = db.query("""SELECT r.title, u.username
+    recipes = db.query("""SELECT r.title, r.id, u.username
                        FROM recipes r, users u
                        WHERE r.user_id = u.id
                        """)
