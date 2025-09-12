@@ -10,6 +10,16 @@
   <p>
     {{ message }}
   </p>
+  <p>
+    Reseptit
+    <ul>
+      {% for recipe in recipes %}
+        <li>
+          {{ recipe.title }} (lisännyt {{ recipe.username }})
+        </li>
+      {% endfor %}
+    </ul>
+  </p>
 </body>
 
 </html>
