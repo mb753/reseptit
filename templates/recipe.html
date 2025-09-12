@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Reseptit</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+  <h1>Reseptit</h1>
+
+  <p class="notification">
+    {{ message }}
+  </p>
+
+  <h2>{{ recipe.title }}</h2>
+  
+  <p>Lisännyt {{ recipe.username }}.</p>
+
+  <p>
+    Ainekset
+    <ul>
+      {% for ingredient in ingredients %}
+        <li>
+          {{ ingredient[0] }}
+        </li>
+      {% endfor %}
+    </ul>
+  </p>
+
+  <p>
+    Ohje
+    <ol>
+      {% for instruction in instructions %}
+        <li>
+          {{ instruction[0] }}
+        </li>
+      {% endfor %}    
+    </ol>
+  </p>
+
+  <p>
+    <a href="/">Takaisin etusivulle</a>
+  </p>
+
+</body>
+
+</html>
