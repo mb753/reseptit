@@ -21,3 +21,10 @@ CREATE TABLE instructions (
     instruction TEXT,
     recipe_id INTEGER REFERENCES recipes
 );
+
+CREATE TABLE comments (
+    id INTEGER PRIMARY KEY,
+    comment TEXT,
+    recipe_id INTEGER REFERENCES recipes,
+    user_id INTEGER REFERENCES users
+);
