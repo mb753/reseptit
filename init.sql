@@ -6,7 +6,6 @@ DELETE FROM comments;
 
 INSERT INTO users (username) VALUES ('Chef de cuisine');
 INSERT INTO users (username) VALUES ('Monsieur Michelin');
-INSERT INTO users (username) VALUES ('Anonyymi');
 
 INSERT INTO recipes (title, user_id) VALUES ('Mikrokaurapuuro', 1);
 INSERT INTO ingredients (ingredient, recipe_id) VALUES ('1 dl pikakaurahiutaleita', 1);

@@ -60,6 +60,7 @@
     </ul>
   </p>
   
+  {% if session.username %}
   <form action="/recipe/{{ recipe.id }}" method="POST">
     <p>
       Lisää kommentti:
@@ -67,6 +68,7 @@
     </p>
     <input type="submit" value="Lähetä" />
   </form>
+  {% endif %}
 
   <p>
     <a href="/">Takaisin etusivulle</a>

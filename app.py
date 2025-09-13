@@ -27,7 +27,7 @@ def recipe(recipe_id):
 
     if request.method == "POST":
         comment = request.form["comment"]
-        db.execute("INSERT INTO comments (comment, recipe_id, user_id) VALUES (?, ?, ?)", [comment, recipe_id, 3])
+        db.execute("INSERT INTO comments (comment, recipe_id, user_id) VALUES (?, ?, ?)", [comment, recipe_id, session["user_id"]])
         return redirect("/recipe/" + str(recipe_id))
 
     ingredients = db.query("SELECT ingredient FROM ingredients WHERE recipe_id = ?", [recipe_id])
@@ -70,6 +70,7 @@ def login():
 
         if check_password_hash(password_hash, password):
             session["username"] = username
+            session["user_id"] = db.query("SELECT id FROM users WHERE username = ?", [username])[0][0]
             return redirect("/")
         else:
             return render_template("login.html", result="VIRHE: väärä tunnus tai salasana")
@@ -80,4 +81,5 @@ def login():
 @app.route("/logout")
 def logout():
     del session["username"]
+    del session["user_id"]
     return redirect("/")
