@@ -66,6 +66,31 @@ def add_recipe():
     return render_template("add_recipe.html")
 
 
+@app.route("/edit_recipe/<int:recipe_id>")
+def edit_recipe(recipe_id):
+    return "Toiminto tulossa"
+
+
+@app.route("/delete_recipe/<int:recipe_id>")
+def delete_recipe(recipe_id):
+    try:
+        recipe_creator = db.query("SELECT user_id FROM recipes WHERE id = ?", [recipe_id])[0][0]
+    except:
+        abort(404)
+
+    if not session["user_id"]:
+        abort(403)
+    if session["user_id"] != recipe_creator:
+        abort(403)
+
+    db.execute("DELETE FROM ingredients WHERE recipe_id = ?", [recipe_id])
+    db.execute("DELETE FROM instructions WHERE recipe_id = ?", [recipe_id])
+    db.execute("DELETE FROM comments WHERE recipe_id = ?", [recipe_id])
+    db.execute("DELETE FROM recipes WHERE id = ?", [recipe_id])
+
+    return redirect("/")
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":

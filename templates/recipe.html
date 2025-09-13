@@ -27,6 +27,14 @@
   
   <p>Lisännyt {{ recipe.username }}.</p>
 
+  {% if session.username %}
+    {% if session.username == recipe.username %}
+    <p>
+      <a href="/edit_recipe/{{ recipe.id }}">Muokkaa</a> | <a href="/delete_recipe/{{ recipe.id }}">Poista heti</a>
+    </p>
+    {% endif %}
+  {% endif %}
+
   <p>
     Ainekset
     <ul>
