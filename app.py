@@ -7,13 +7,15 @@ import config, db
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+
 @app.route("/")
 def index():
     recipes = db.query("""SELECT r.title, r.id, u.username
                        FROM recipes r, users u
                        WHERE r.user_id = u.id
                        """)
-    return render_template("index.html", message="Reseptisovellus on rakenteilla.", recipes=recipes)
+    return render_template("index.html", recipes=recipes)
+
 
 @app.route("/recipe/<int:recipe_id>", methods=["GET", "POST"])
 def recipe(recipe_id):
@@ -32,7 +34,7 @@ def recipe(recipe_id):
     instructions = db.query("SELECT instruction FROM instructions WHERE recipe_id = ?", [recipe_id])
     comments = db.query("SELECT c.comment, c.user_id, u.username FROM comments c, users u WHERE c.recipe_id = ? AND u.id = c.user_id", [recipe_id])
 
-    return render_template("recipe.html", message="Reseptisovellus on rakenteilla.", recipe=recipe, ingredients=ingredients, instructions=instructions, comments=comments)
+    return render_template("recipe.html", recipe=recipe, ingredients=ingredients, instructions=instructions, comments=comments)
 
 
 @app.route("/register", methods=["GET", "POST"])
