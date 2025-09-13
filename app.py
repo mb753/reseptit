@@ -26,6 +26,8 @@ def recipe(recipe_id):
     recipe = recipe[0] if recipe else abort(404)
 
     if request.method == "POST":
+        if not session["username"]:
+            abort(403)
         comment = request.form["comment"]
         db.execute("INSERT INTO comments (comment, recipe_id, user_id) VALUES (?, ?, ?)", [comment, recipe_id, session["user_id"]])
         return redirect("/recipe/" + str(recipe_id))
