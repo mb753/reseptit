@@ -17,7 +17,10 @@
     <p>
       Olet kirjautunut nimellä {{ session.username }} | <a href="/logout">Kirjaudu ulos</a>
     </p>
-  {% else %}
+    <p>
+      <a href="/add_recipe">Lisää resepti</a>
+    </p>
+    {% else %}
     <p>
       <a href="/login">Kirjaudu sisään</a> | <a href="/register">Luo tunnus</a>
     </p>  

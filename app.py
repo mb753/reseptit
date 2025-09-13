@@ -37,6 +37,33 @@ def recipe(recipe_id):
     return render_template("recipe.html", recipe=recipe, ingredients=ingredients, instructions=instructions, comments=comments)
 
 
+@app.route("/add_recipe", methods=["GET", "POST"])
+def add_recipe():
+    if request.method == "POST":
+        if not session["username"]:
+            abort(403)
+
+        recipe_name = request.form["recipe_name"]
+        ingredients = request.form["ingredients"].split("\n")
+        instructions = request.form["instructions"].split("\n")
+
+        if recipe_name == "":
+            recipe_name = "Nimetön resepti"
+
+        db.execute("INSERT INTO recipes (title, user_id) VALUES (?, ?)", [recipe_name, session["user_id"]])
+        recipe_id = db.last_insert_id()
+
+        parameters = [(ingredient.strip(), recipe_id) for ingredient in ingredients]
+        db.executemany("INSERT INTO ingredients (ingredient, recipe_id) VALUES (?, ?)", parameters)
+
+        parameters = [(instruction.strip(), recipe_id) for instruction in instructions]
+        db.executemany("INSERT INTO instructions (instruction, recipe_id) VALUES (?, ?)", parameters)
+
+        return redirect("/")
+    
+    return render_template("add_recipe.html")
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":

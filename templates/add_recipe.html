@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Reseptit</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+  <h1>Reseptit</h1>
+
+  <p class="notification">
+    Reseptisovellus on rakenteilla.
+  </p>
+
+  {% if session.username %}
+    <p>
+      Olet kirjautunut nimellä {{ session.username }} | <a href="/logout">Kirjaudu ulos</a>
+    </p>
+  {% else %}
+    <p>
+      <a href="/login">Kirjaudu sisään</a> | <a href="/register">Luo tunnus</a>
+    </p>  
+  {% endif %}
+
+  <h2>Reseptin lisäys</h2>
+
+  <form action="/add_recipe" method="POST">
+    <p>
+      Reseptin nimi:<br>
+      <input type="text" name="recipe_name" />
+    </p>    
+    <p>
+      Ainekset (kirjoita jokainen aines omalle rivilleen):<br>
+      <textarea name="ingredients" rows="5" cols="40"></textarea>
+    </p>
+    <p>
+      Ohjeet (kirjoita jokainen askel omalle rivilleen):<br>
+      <textarea name="instructions" rows="5" cols="40"></textarea>
+    </p>
+    <input type="submit" value="Lisää" />
+  </form>
+  
+  <p>
+    <a href="/">Takaisin etusivulle</a>
+  </p>
+
+</body>
+
+</html>
