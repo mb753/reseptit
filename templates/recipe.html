@@ -40,6 +40,25 @@
   </p>
 
   <p>
+    Kommentit<br>
+    <ul>
+      {% for comment in comments %}
+        <li>
+          "{{ comment.comment }}" ({{ comment.username }})
+        </li>
+      {% endfor %}
+    </ul>
+  </p>
+  
+  <form action="/recipe/{{ recipe.id }}" method="POST">
+    <p>
+      Lisää kommentti:
+      <input type="text" name="comment" />
+    </p>
+    <input type="submit" value="Lähetä" />
+  </form>
+
+  <p>
     <a href="/">Takaisin etusivulle</a>
   </p>
 
