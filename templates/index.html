@@ -10,11 +10,22 @@
   <h1>Reseptit</h1>
   
   <p class="notification">
-    {{ message }}
+    Reseptisovellus on rakenteilla.
   </p>
-  
+
+  {% if session.username %}
+    <p>
+      Olet kirjautunut nimellä {{ session.username }} | <a href="/logout">Kirjaudu ulos</a>
+    </p>
+  {% else %}
+    <p>
+      <a href="/login">Kirjaudu sisään</a> | <a href="/register">Luo tunnus</a>
+    </p>  
+  {% endif %}
+
+  <h2>Reseptit</h2>
+
   <p>
-    Reseptit
     <ul>
       {% for recipe in recipes %}
         <li>

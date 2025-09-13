@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Reseptit</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+  <h1>Reseptit</h1>
+  
+  <p class="notification">
+    Reseptisovellus on rakenteilla.
+  </p>
+
+  <h2>Kirjaudu sisään</h2>
+
+  <form action="/login" method="POST">
+    <p>
+      Tunnus: <br />
+      <input type="text" name="username" />
+    </p>
+    <p>
+      Salasana: <br />
+      <input type="password" name="password" />
+    </p>
+    <input type="submit" value="Kirjaudu" />
+  </form>
+
+  {% if result %}
+    <b>{{ result }}</b>
+  {% endif %}
+
+  <p>
+    <a href="/">Takaisin etusivulle</a>
+  </p>
+
+</body>
+
+</html>
