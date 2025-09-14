@@ -1,17 +1,6 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Reseptit</title>
-  <link rel="stylesheet" href="/static/main.css">
-</head>
-
-<body>
-  <h1>Reseptit</h1>
-  
-  <p class="notification">
-    Reseptisovellus on rakenteilla.
-  </p>
+{% block content %}
 
   <h2>Luo tunnus</h2>
 
@@ -35,10 +24,4 @@
     <b>{{ result }}</b>
   {% endif %}
 
-  <p>
-    <a href="/">Takaisin etusivulle</a>
-  </p>
-
-</body>
-
-</html>
+{% endblock %}

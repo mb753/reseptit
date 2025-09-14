@@ -1,30 +1,6 @@
-<!DOCTYPE html>
-<html>
+{% extends "layout.html" %}
 
-<head>
-  <title>Reseptit</title>
-  <link rel="stylesheet" href="/static/main.css">
-</head>
-
-<body>
-  <h1>Reseptit</h1>
-  
-  <p class="notification">
-    Reseptisovellus on rakenteilla.
-  </p>
-
-  {% if session.username %}
-    <p>
-      Olet kirjautunut nimellä {{ session.username }} | <a href="/logout">Kirjaudu ulos</a>
-    </p>
-    <p>
-      <a href="/add_recipe">Lisää resepti</a>
-    </p>
-    {% else %}
-    <p>
-      <a href="/login">Kirjaudu sisään</a> | <a href="/register">Luo tunnus</a>
-    </p>  
-  {% endif %}
+{% block content %}
 
   <h2>Reseptit</h2>
 
@@ -38,6 +14,4 @@
     </ul>
   </p>
 
-</body>
-
-</html>
+{% endblock %}
