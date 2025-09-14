@@ -91,6 +91,11 @@ def delete_recipe(recipe_id):
     return redirect("/")
 
 
+@app.route("/search")
+def search():
+    return "Toiminto tulossa"
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
