@@ -14,4 +14,10 @@
     </ul>
   </p>
 
+  {% if session.user_id %}
+    <p>
+      <a href="/add_recipe">Lisää resepti</a>
+    </p>
+  {% endif %}
+
 {% endblock %}
