@@ -117,19 +117,27 @@ def register():
         username = request.form["username"]
         password1 = request.form["password1"]
         password2 = request.form["password2"]
+
+        if username == "":
+            result = "VIRHE: anna käyttäjätunnus"
+            return render_template("register.html", result=result)
         if password1 != password2:
-            return render_template("register.html", result="VIRHE: salasanat eivät ole samat")
+            result = "VIRHE: salasanat eivät ole samat"
+            return render_template("register.html", result=result, username=username)
         if password1 == "":
-            return render_template("register.html", result="VIRHE: salasana on pakollinen")
+            result = "VIRHE: salasana on pakollinen"
+            return render_template("register.html", result=result, username=username)
+        
         password_hash = generate_password_hash(password1)
 
         try:
             sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
             db.execute(sql, [username, password_hash])
         except sqlite3.IntegrityError:
-            return render_template("register.html", result="VIRHE: tunnus on jo varattu")
+            result = "VIRHE: tunnus on jo varattu"
+            return render_template("register.html", result=result, username=username)
 
-        return render_template("register.html", result="Tunnus luotu")
+        return render_template("register.html", result=f"Tunnus {username} luotu")
 
     return render_template("register.html")
 

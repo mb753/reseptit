@@ -7,7 +7,7 @@
   <form action="/register" method="POST">
     <p>
       Tunnus: <br/>
-      <input type="text" name="username" />
+      <input type="text" name="username" {% if username %} value="{{ username }}" {% endif %} />
     </p>
     <p>
       Salasana: <br/>
@@ -21,7 +21,9 @@
   </form>
 
   {% if result %}
-    <b>{{ result }}</b>
+    <p>
+      <b>{{ result }}</b>
+    </p>
   {% endif %}
 
 {% endblock %}
