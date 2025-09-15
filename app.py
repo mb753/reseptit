@@ -28,7 +28,7 @@ def recipe(recipe_id):
         abort(404)
 
     if request.method == "POST":
-        if not session["username"]:
+        if "user_id" not in session:
             abort(403)
         comment = request.form["comment"]
         sql = "INSERT INTO comments (comment, recipe_id, user_id) VALUES (?, ?, ?)"
@@ -52,7 +52,7 @@ def recipe(recipe_id):
 @app.route("/add_recipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "POST":
-        if not session["user_id"]:
+        if "user_id" not in session:
             abort(403)
 
         recipe_creator = session["user_id"]
@@ -93,7 +93,7 @@ def delete_recipe(recipe_id):
     except:
         abort(404)
 
-    if not session["user_id"]:
+    if "user_id" not in session:
         abort(403)
     if session["user_id"] != recipe_creator:
         abort(403)
@@ -174,6 +174,8 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["username"]
-    del session["user_id"]
+    if "user_id" in session:
+        del session["user_id"]
+        del session["username"]
+    
     return redirect("/")
