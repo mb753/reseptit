@@ -148,15 +148,26 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT password_hash FROM users WHERE username = ?"
-        password_hash = db.query(sql, [username])[0][0]
+        try:
+            sql = "SELECT password_hash FROM users WHERE username = ?"
+            password_hash = db.query(sql, [username])[0][0]
+        except:
+            result = "VIRHE: väärä tunnus tai salasana"
+            return render_template("login.html", result=result, username=username)
+
+        # deal with test users from init.sql for which no password hash is stored
+        if password_hash == None:
+            result = "VIRHE: väärä tunnus tai salasana"
+            return render_template("login.html", result=result, username=username)
 
         if check_password_hash(password_hash, password):
             session["username"] = username
-            session["user_id"] = db.query("SELECT id FROM users WHERE username = ?", [username])[0][0]
+            user_id = db.query("SELECT id FROM users WHERE username = ?", [username])[0][0]
+            session["user_id"] = user_id
             return redirect("/")
         else:
-            return render_template("login.html", result="VIRHE: väärä tunnus tai salasana")
+            result = "VIRHE: väärä tunnus tai salasana"
+            return render_template("login.html", result=result, username=username)
 
     return render_template("login.html")
 
