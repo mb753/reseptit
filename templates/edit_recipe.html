@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+  <h2>Reseptin muokkaus</h2>
+
+  <form action="/edit_recipe/{{ recipe_id }}" method="POST">
+    <p>
+      Reseptin nimi:<br>
+      <input type="text" name="recipe_name" value="{{ recipe_name }}"/>
+    </p>    
+    <p>
+      Ainekset (kirjoita jokainen aines omalle rivilleen):<br>
+      <textarea name="ingredients" rows="5" cols="40">{{ ingredients }}</textarea>
+    </p>
+    <p>
+      Ohjeet (kirjoita jokainen askel omalle rivilleen):<br>
+      <textarea name="instructions" rows="5" cols="40">{{ instructions }}</textarea>
+    </p>
+    <input type="submit" value="Tallenna" />
+  </form>
+  
+{% endblock %}

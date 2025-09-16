@@ -80,9 +80,56 @@ def add_recipe():
     return render_template("add_recipe.html")
 
 
-@app.route("/edit_recipe/<int:recipe_id>")
+# add_recipe and edit_recipe probably should be combined somehow,
+# as they have a lot in common
+
+@app.route("/edit_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def edit_recipe(recipe_id):
-    return "Toiminto tulossa"
+    try:
+        sql = "SELECT title, user_id FROM recipes WHERE id = ?"
+        recipe_name, recipe_creator = db.query(sql, [recipe_id])[0]
+    except:
+        abort(404)
+
+    if "user_id" not in session:
+        abort(403)
+    if session["user_id"] != recipe_creator:
+        abort(403)
+
+    if request.method == "POST":
+        recipe_name = request.form["recipe_name"]
+        ingredients = request.form["ingredients"].split("\n")
+        instructions = request.form["instructions"].split("\n")
+
+        if recipe_name == "":
+            recipe_name = "Nimetön resepti"
+
+        sql = "UPDATE recipes SET title = ? WHERE id = ?"
+        db.execute(sql, [recipe_name, recipe_id])
+
+        sql = "DELETE FROM ingredients WHERE recipe_id = ?"
+        db.execute(sql, [recipe_id])
+        sql = "INSERT INTO ingredients (ingredient, recipe_id) VALUES (?, ?)"
+        parameters = [(ingredient.strip(), recipe_id) for ingredient in ingredients]
+        db.executemany(sql, parameters)
+
+        sql = "DELETE FROM instructions WHERE recipe_id = ?"
+        db.execute(sql, [recipe_id])
+        sql = "INSERT INTO instructions (instruction, recipe_id) VALUES (?, ?)"
+        parameters = [(instruction.strip(), recipe_id) for instruction in instructions]
+        db.executemany(sql, parameters)
+
+        return redirect("/recipe/" + str(recipe_id))
+
+    sql = "SELECT ingredient FROM ingredients WHERE recipe_id = ?"
+    ingredients = db.query(sql, [recipe_id])
+    ingredients = "\n".join(ingredient[0] for ingredient in ingredients)
+
+    sql = "SELECT instruction FROM instructions WHERE recipe_id = ?"
+    instructions = db.query(sql, [recipe_id])
+    instructions = "\n".join(instruction[0] for instruction in instructions)
+
+    return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name, ingredients=ingredients, instructions=instructions)
 
 
 @app.route("/delete_recipe/<int:recipe_id>")
