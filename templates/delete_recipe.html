@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+  <h2>Reseptin poisto</h2>
+
+    <p>Poistettava resepti: {{ recipe_name }}</p>
+
+  <form action="/delete_recipe/{{ recipe_id }}" method="POST">
+    <p>Oletko varma? Poiston jälkeen resepti ei ole enää palautettavissa.</p>
+    <input type="submit" value="Poista" />
+  </form>
+
+{% endblock %}

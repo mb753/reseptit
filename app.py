@@ -132,11 +132,11 @@ def edit_recipe(recipe_id):
     return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name, ingredients=ingredients, instructions=instructions)
 
 
-@app.route("/delete_recipe/<int:recipe_id>")
+@app.route("/delete_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def delete_recipe(recipe_id):
     try:
-        sql = "SELECT user_id FROM recipes WHERE id = ?"
-        recipe_creator = db.query(sql, [recipe_id])[0][0]
+        sql = "SELECT title, user_id FROM recipes WHERE id = ?"
+        recipe_name, recipe_creator = db.query(sql, [recipe_id])[0]
     except:
         abort(404)
 
@@ -145,13 +145,15 @@ def delete_recipe(recipe_id):
     if session["user_id"] != recipe_creator:
         abort(403)
 
-    db.execute("DELETE FROM ingredients WHERE recipe_id = ?", [recipe_id])
-    db.execute("DELETE FROM instructions WHERE recipe_id = ?", [recipe_id])
-    db.execute("DELETE FROM comments WHERE recipe_id = ?", [recipe_id])
-    db.execute("DELETE FROM recipes WHERE id = ?", [recipe_id])
+    if request.method == "POST":
+        db.execute("DELETE FROM ingredients WHERE recipe_id = ?", [recipe_id])
+        db.execute("DELETE FROM instructions WHERE recipe_id = ?", [recipe_id])
+        db.execute("DELETE FROM comments WHERE recipe_id = ?", [recipe_id])
+        db.execute("DELETE FROM recipes WHERE id = ?", [recipe_id])
 
-    return redirect("/")
+        return redirect("/")
 
+    return render_template("/delete_recipe.html", recipe_name=recipe_name, recipe_id=recipe_id)
 
 @app.route("/search")
 def search():
