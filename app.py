@@ -155,9 +155,33 @@ def delete_recipe(recipe_id):
 
     return render_template("/delete_recipe.html", recipe_name=recipe_name, recipe_id=recipe_id)
 
-@app.route("/search")
+
+@app.route("/search", methods=["GET", "POST"])
 def search():
-    return "Toiminto tulossa"
+    recipes = None
+
+    if request.method == "POST":
+        search_string = request.form["search_string"]
+        if search_string != "":
+            sql = """SELECT r.id, r.title, u.username
+                     FROM recipes r, users u
+                     WHERE r.title LIKE '%' || ? || '%' AND r.user_id = u.id
+                     UNION
+                     SELECT r.id, r.title, u.username
+                     FROM recipes r, users u, ingredients i
+                     WHERE i.ingredient LIKE '%' || ? || '%' AND i.recipe_id = r.id AND r.user_id = u.id
+                     UNION                    
+                     SELECT r.id, r.title, u.username
+                     FROM recipes r, users u, instructions i
+                     WHERE i.instruction LIKE '%' || ? || '%' AND i.recipe_id = r.id AND r.user_id = u.id
+                     UNION
+                     SELECT r.id, r.title, u.username
+                     FROM recipes r, users u, comments c
+                     WHERE c.comment LIKE '%' || ? || '%' AND c.recipe_id = r.id AND r.user_id = u.id"""
+            parameters = [search_string for i in range(4)]
+            recipes = db.query(sql, parameters)
+
+    return render_template("search.html", recipes=recipes)
 
 
 @app.route("/register", methods=["GET", "POST"])

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+  <h2>Haku</h2>
+
+  <p>Haku palauttaa listan resepteistä, joiden nimessä, aineksissa, ohjeissa tai kommenteissa antamasi hakusana esiintyy.</p>
+
+  <form action="/search" method="POST">
+    <p>
+      Anna hakusana:<br>
+      <input type="text" name="search_string" />
+    </p>
+    <input type="submit" value="Hae" />
+  </form>
+
+  {% if recipes %}
+  <h3>Hakutulos</h3>
+  <p>
+    <ul>
+      {% for recipe in recipes %}
+      <li>
+        <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a> (lisännyt {{ recipe.username }})
+      </li>
+      {% endfor %}
+    </ul>
+  </p>
+  {% endif %}
+
+{% endblock %}
