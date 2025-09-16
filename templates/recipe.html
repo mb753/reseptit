@@ -3,16 +3,16 @@
 {% block content %}
 
   <h2>{{ recipe.title }}</h2>
-  
-  <p>Lisännyt {{ recipe.username }}.</p>
 
-  {% if session.username %}
-    {% if session.username == recipe.username %}
+  {% if session.username == recipe.username %}
     <p>
-      <a href="/edit_recipe/{{ recipe.id }}">Muokkaa</a> | <a href="/delete_recipe/{{ recipe.id }}">Poista</a>
+      Oma reseptisi (<a href="/edit_recipe/{{ recipe.id }}">muokkaa</a> | <a href="/delete_recipe/{{ recipe.id }}">poista)</a>
     </p>
-    {% endif %}
+  {% else %}
+    <p>Lisännyt {{ recipe.username }}.</p>
   {% endif %}
+
+  <h3>Resepti</h3>
 
   <p>
     Ainekset
@@ -36,8 +36,9 @@
     </ol>
   </p>
 
+  <h3>Kommentit</h3>
+
   <p>
-    Kommentit<br>
     <ul>
       {% for comment in comments %}
         <li>
@@ -50,11 +51,13 @@
   {% if session.username %}
   <form action="/recipe/{{ recipe.id }}" method="POST">
     <p>
-      Lisää kommentti:
+      Lisää kommentti:<br>
       <input type="text" name="comment" />
+      <input type="submit" value="Lähetä" />
     </p>
-    <input type="submit" value="Lähetä" />
   </form>
+  {% else %}
+    <p><a href="/login">Kirjaudu sisään</a> voidaksesi kommentoida.</p>
   {% endif %}
 
 {% endblock %}
