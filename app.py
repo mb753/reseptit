@@ -10,7 +10,7 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    sql = """SELECT r.title, r.id, u.username
+    sql = """SELECT r.title, r.id, u.username, u.id AS user_id
              FROM recipes r, users u
              WHERE r.user_id = u.id"""
     recipes = db.query(sql)
@@ -20,7 +20,7 @@ def index():
 @app.route("/recipe/<int:recipe_id>", methods=["GET", "POST"])
 def recipe(recipe_id):
     try:
-        sql = """SELECT r.title, r.id, u.username
+        sql = """SELECT r.title, r.id, u.username, u.id AS user_id
                  FROM recipes r, users u
                  WHERE r.id = ? AND r.user_id = u.id"""
         recipe = db.query(sql, [recipe_id])[0]
@@ -182,6 +182,26 @@ def search():
             recipes = db.query(sql, parameters)
 
     return render_template("search.html", recipes=recipes)
+
+
+@app.route("/user/<int:user_id>")
+def user(user_id):
+    try:
+        sql = "SELECT username FROM users WHERE id = ?"
+        username = db.query(sql, [user_id])[0][0]
+    except:
+        abort(404)
+
+    sql = "SELECT title, id FROM recipes WHERE user_id = ?"
+    created = db.query(sql, [user_id])
+
+    sql = """SELECT c.recipe_id AS id, r.title
+             FROM comments c, recipes r
+             WHERE c.user_id = ? AND c.recipe_id = r.id
+             GROUP BY c.recipe_id"""
+    commented = db.query(sql, [user_id])
+
+    return render_template("user.html", username=username, created=created, commented=commented)
 
 
 @app.route("/register", methods=["GET", "POST"])

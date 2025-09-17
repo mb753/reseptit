@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+  <h2>Käyttäjä {{ username }}</h2>
+
+  <p>Käyttäjän lisäämät reseptit ({{ created | length }} kpl):</p>
+
+  <p>
+    <ul>
+      {% for recipe in created %}
+        <li>
+          <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </p>
+
+  <p>Käyttäjän kommentoimat reseptit ({{ commented | length }} kpl):</p>
+
+  <p>
+    <ul>
+      {% for recipe in commented %}
+        <li>
+          <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </p>
+
+  {% endblock %}

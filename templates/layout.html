@@ -21,7 +21,7 @@
         <li><a href="/">Etusivu</a></li>
         <li><a href="/search">Haku</a></li>
         {% if session.user_id %}
-          <li>Käyttäjä {{ session.username }}</li>
+          <li>Käyttäjä <a href="/user/{{ session.user_id }}">{{ session.username }}</a></li>
           <li><a href="/logout">Kirjaudu ulos</a></li>
         {% else %}
           <li><a href="/register">Luo tunnus</a></li>

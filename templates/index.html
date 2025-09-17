@@ -10,7 +10,7 @@
     <ul>
       {% for recipe in recipes %}
         <li>
-          <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a> (lisännyt {{ recipe.username }})
+          <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a> (lisännyt <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>)
         </li>
       {% endfor %}
     </ul>

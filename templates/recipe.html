@@ -9,7 +9,7 @@
       Oma reseptisi (<a href="/edit_recipe/{{ recipe.id }}">muokkaa</a> | <a href="/delete_recipe/{{ recipe.id }}">poista)</a>
     </p>
   {% else %}
-    <p>Lisännyt {{ recipe.username }}.</p>
+    <p>Lisännyt <a href="/user/{{ recipe.user_id }}">{{ recipe.username }}</a>.</p>
   {% endif %}
 
   <h3>Resepti</h3>
@@ -42,7 +42,7 @@
     <ul>
       {% for comment in comments %}
         <li>
-          "{{ comment.comment }}" ({{ comment.username }})
+          "{{ comment.comment }}" (<a href="/user/{{ comment.user_id }}">{{ comment.username }}</a>)
         </li>
       {% endfor %}
     </ul>
