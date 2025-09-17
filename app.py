@@ -206,7 +206,8 @@ def register():
         try:
             sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)"
             db.execute(sql, [username, password_hash])
-        except sqlite3.IntegrityError:
+        except:
+        # except sqlite3.IntegrityError:
             result = "VIRHE: tunnus on jo varattu"
             return render_template("register.html", result=result, username=username)
 
