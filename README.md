@@ -17,11 +17,15 @@ HUOM. Sovellus ei ole vielä valmis.
 
 ## Sovelluksen asennus
 
+Tarvitset Pythonin ja SQLiten. Tarvittaessa asenna nämä ensin.
+
 Asenna `flask`-kirjasto:
 
 ```
 $ pip install flask
 ```
+
+Kloonaa repositiorio ja siirry kyseiseen hakemistoon.
 
 Luo tietokannan taulut ja lisää alkutiedot:
 
@@ -30,8 +34,10 @@ $ sqlite3 database.db < schema.sql
 $ sqlite3 database.db < init.sql
 ```
 
-Voit käynnistää sovelluksen näin:
+Käynnistä sovellus näin:
 
 ```
 $ flask run
 ```
+
+Nyt voit avata sovelluksen selaimessa osoitteessa 127.0.0.1:5000.
