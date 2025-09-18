@@ -27,13 +27,36 @@ def recipe(recipe_id):
     except:
         abort(404)
 
+    sql = """SELECT r.grade, r.comment, r.user_id, u.username
+             FROM reviews r, users u
+             WHERE r.recipe_id = ? AND u.id = r.user_id"""
+    reviews = db.query(sql, [recipe_id])
+    reviewers = [review["user_id"] for review in reviews]
+
+    allow_review = False
+    if "user_id" in session:
+        if (session["user_id"] not in reviewers) and (session["user_id"] != recipe["user_id"]):
+            allow_review = True
+
     if request.method == "POST":
         if "user_id" not in session:
             abort(403)
+        if not allow_review:
+            return ("Et voi arvioida tätä reseptiä, koska olet jo arvioinut sen tai kyse on omasta reseptistäsi.")
+
+        grade = request.form["grade"]
         comment = request.form["comment"]
-        sql = "INSERT INTO comments (comment, recipe_id, user_id) VALUES (?, ?, ?)"
-        db.execute(sql, [comment, recipe_id, session["user_id"]])
+        user_id = session["user_id"]
+        sql = "INSERT INTO reviews (grade, comment, recipe_id, user_id) VALUES (?, ?, ?, ?)"
+        db.execute(sql, [grade, comment, recipe_id, user_id])
         return redirect("/recipe/" + str(recipe_id))
+
+    grades = [review["grade"] for review in reviews]
+    grade_count = len(grades)
+    if grade_count > 0:
+        mean_grade = f"{round(sum(grades) / grade_count, 1)} / 5"
+    else:
+        mean_grade = "n/a"
 
     sql = "SELECT ingredient FROM ingredients WHERE recipe_id = ?"
     ingredients = db.query(sql, [recipe_id])
@@ -41,12 +64,9 @@ def recipe(recipe_id):
     sql = "SELECT instruction FROM instructions WHERE recipe_id = ?"
     instructions = db.query(sql, [recipe_id])
 
-    sql = """SELECT c.comment, c.user_id, u.username
-             FROM comments c, users u
-             WHERE c.recipe_id = ? AND u.id = c.user_id"""
-    comments = db.query(sql, [recipe_id])
-
-    return render_template("recipe.html", recipe=recipe, ingredients=ingredients, instructions=instructions, comments=comments)
+    return render_template("recipe.html", recipe=recipe, ingredients=ingredients,\
+        instructions=instructions, reviews=reviews, reviewers=reviewers,\
+        allow_review=allow_review, mean_grade=mean_grade, grade_count=grade_count)
 
 
 @app.route("/add_recipe", methods=["GET", "POST"])
@@ -148,7 +168,7 @@ def delete_recipe(recipe_id):
     if request.method == "POST":
         db.execute("DELETE FROM ingredients WHERE recipe_id = ?", [recipe_id])
         db.execute("DELETE FROM instructions WHERE recipe_id = ?", [recipe_id])
-        db.execute("DELETE FROM comments WHERE recipe_id = ?", [recipe_id])
+        db.execute("DELETE FROM reviews WHERE recipe_id = ?", [recipe_id])
         db.execute("DELETE FROM recipes WHERE id = ?", [recipe_id])
 
         return redirect("/")
@@ -175,9 +195,9 @@ def search():
                      FROM recipes r, users u, instructions i
                      WHERE i.instruction LIKE '%' || ? || '%' AND i.recipe_id = r.id AND r.user_id = u.id
                      UNION
-                     SELECT r.id, r.title, u.username
-                     FROM recipes r, users u, comments c
-                     WHERE c.comment LIKE '%' || ? || '%' AND c.recipe_id = r.id AND r.user_id = u.id"""
+                     SELECT rec.id, rec.title, u.username
+                     FROM recipes rec, users u, reviews rev
+                     WHERE rev.comment LIKE '%' || ? || '%' AND rev.recipe_id = rec.id AND rec.user_id = u.id"""
             parameters = [search_string for i in range(4)]
             recipes = db.query(sql, parameters)
 
@@ -195,13 +215,12 @@ def user(user_id):
     sql = "SELECT title, id FROM recipes WHERE user_id = ?"
     created = db.query(sql, [user_id])
 
-    sql = """SELECT c.recipe_id AS id, r.title
-             FROM comments c, recipes r
-             WHERE c.user_id = ? AND c.recipe_id = r.id
-             GROUP BY c.recipe_id"""
-    commented = db.query(sql, [user_id])
+    sql = """SELECT rev.recipe_id AS id, rec.title
+             FROM reviews rev, recipes rec
+             WHERE rev.user_id = ? AND rev.recipe_id = rec.id"""
+    reviewed = db.query(sql, [user_id])
 
-    return render_template("user.html", username=username, created=created, commented=commented)
+    return render_template("user.html", username=username, created=created, reviewed=reviewed)
 
 
 @app.route("/register", methods=["GET", "POST"])

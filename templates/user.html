@@ -16,11 +16,11 @@
     </ul>
   </p>
 
-  <p>Käyttäjän kommentoimat reseptit ({{ commented | length }} kpl):</p>
+  <p>Käyttäjän arvioimat reseptit ({{ reviewed | length }} kpl):</p>
 
   <p>
     <ul>
-      {% for recipe in commented %}
+      {% for recipe in reviewed %}
         <li>
           <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a>
         </li>

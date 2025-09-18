@@ -22,8 +22,9 @@ CREATE TABLE instructions (
     recipe_id INTEGER REFERENCES recipes
 );
 
-CREATE TABLE comments (
+CREATE TABLE reviews (
     id INTEGER PRIMARY KEY,
+    grade INTEGER,
     comment TEXT,
     recipe_id INTEGER REFERENCES recipes,
     user_id INTEGER REFERENCES users

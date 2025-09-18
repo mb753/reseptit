@@ -36,28 +36,51 @@
     </ol>
   </p>
 
-  <h3>Kommentit</h3>
+  <h3>Arviot</h3>
 
+  {% if grade_count > 0 %}
   <p>
+    Keskimääräinen arvio: {{ mean_grade }} (perustuen {{ grade_count }} arvioon)
+  </p>
+  <p>
+    Käyttäjien arviot:
     <ul>
-      {% for comment in comments %}
+      {% for review in reviews %}
         <li>
-          "{{ comment.comment }}" (<a href="/user/{{ comment.user_id }}">{{ comment.username }}</a>)
+          {{ review.grade }}/5, "{{ review.comment }}" (<a href="/user/{{ review.user_id }}">{{ review.username }}</a>)
         </li>
       {% endfor %}
     </ul>
-  </p>
-  
-  {% if session.username %}
-  <form action="/recipe/{{ recipe.id }}" method="POST">
-    <p>
-      Lisää kommentti:<br>
-      <input type="text" name="comment" />
-      <input type="submit" value="Lähetä" />
     </p>
-  </form>
   {% else %}
-    <p><a href="/login">Kirjaudu sisään</a> voidaksesi kommentoida.</p>
+    <p>Ei vielä arvioita.</p>
+  {% endif %}
+
+  {% if session.username %}
+    {% if allow_review %}
+      <h4>Lisää arvio</h4>
+      <form action="/recipe/{{ recipe.id }}" method="POST">
+        <p>
+          Arvosana:
+          <select name="grade">
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+          </select>
+        </p>
+        <p>
+          Kommentti:<br>
+          <input type="text" name="comment" />
+        </p>
+        <input type="submit" value="Lähetä" />
+      </form>
+    {% else %}
+      <p>Et voi arvioida tätä reseptiä, koska olet jo arvioinut sen tai kyse on omasta reseptistäsi.</p>
+    {% endif %}
+  {% else %}
+    <p><a href="/login">Kirjaudu sisään</a> voidaksesi arvioida reseptin.</p>
   {% endif %}
 
 {% endblock %}
