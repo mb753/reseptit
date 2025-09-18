@@ -19,13 +19,20 @@ HUOM. Sovellus ei ole vielä valmis.
 
 Tarvitset Pythonin ja SQLiten. Tarvittaessa asenna nämä ensin.
 
-Asenna `flask`-kirjasto:
+Kloonaa repositorio ja siirry kyseiseen hakemistoon.
+
+Halutessasi luo virtuaaliympäristö ja käynnistä se (ohjeet Linuxille):
+
+```
+$ python3 -m venv venv
+$ source venv/bin/activate
+```
+
+Asenna `flask`-kirjasto (jos loit virtuaaliympäristön, se asentuu vain sinne):
 
 ```
 $ pip install flask
 ```
-
-Kloonaa repositiorio ja siirry kyseiseen hakemistoon.
 
 Luo tietokannan taulut ja lisää alkutiedot:
 
@@ -40,4 +47,4 @@ Käynnistä sovellus näin:
 $ flask run
 ```
 
-Nyt voit avata sovelluksen selaimessa osoitteessa 127.0.0.1:5000.
+Nyt voit avata sovelluksen selaimessa osoitteessa `127.0.0.1:5000`.
