@@ -64,9 +64,16 @@ def recipe(recipe_id):
     sql = "SELECT instruction FROM instructions WHERE recipe_id = ?"
     instructions = db.query(sql, [recipe_id])
 
+    sql = """SELECT cn.category_name
+             FROM category_names cn, recipe_categories rc
+             WHERE rc.recipe_id = ? AND rc.category_id = cn.id"""
+    categories = db.query(sql, [recipe_id])
+    categories = " | ".join(category[0] for category in categories)
+
     return render_template("recipe.html", recipe=recipe, ingredients=ingredients,\
         instructions=instructions, reviews=reviews, reviewers=reviewers,\
-        allow_review=allow_review, mean_grade=mean_grade, grade_count=grade_count)
+        allow_review=allow_review, mean_grade=mean_grade, grade_count=grade_count,\
+        categories=categories)
 
 
 @app.route("/add_recipe", methods=["GET", "POST"])

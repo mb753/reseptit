@@ -4,6 +4,10 @@
 
   <h2>{{ recipe.title }}</h2>
 
+  <p>
+    Luokitus: {{categories }}
+  </p>
+
   {% if session.username == recipe.username %}
     <p>
       Oma reseptisi (<a href="/edit_recipe/{{ recipe.id }}">muokkaa</a> | <a href="/delete_recipe/{{ recipe.id }}">poista)</a>

@@ -10,6 +10,17 @@ CREATE TABLE recipes (
     user_id INTEGER REFERENCES users
 );
 
+CREATE TABLE category_names (
+    id INTEGER PRIMARY KEY,
+    category_name TEXT UNIQUE
+);
+
+CREATE TABLE recipe_categories (
+    id INTEGER PRIMARY KEY,
+    recipe_id INTEGER REFERENCES recipes,
+    category_id INTEGER REFERENCES category_names
+);
+
 CREATE TABLE ingredients (
     id INTEGER PRIMARY KEY,
     ingredient TEXT,
