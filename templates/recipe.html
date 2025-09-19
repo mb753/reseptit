@@ -64,6 +64,7 @@
     {% if allow_review %}
       <h4>Lisää arvio</h4>
       <form action="/recipe/{{ recipe.id }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <p>
           Arvosana:
           <select name="grade">

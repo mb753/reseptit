@@ -1,7 +1,8 @@
 from flask import Flask
 from flask import abort, render_template, redirect, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
-import sqlite3
+# import sqlite3
+import secrets
 import config, db
 
 app = Flask(__name__)
@@ -39,8 +40,7 @@ def recipe(recipe_id):
             allow_review = True
 
     if request.method == "POST":
-        if "user_id" not in session:
-            abort(403)
+        check_csrf()
         if not allow_review:
             return ("Et voi arvioida tätä reseptiä, koska olet jo arvioinut sen tai kyse on omasta reseptistäsi.")
 
@@ -79,8 +79,7 @@ def recipe(recipe_id):
 @app.route("/add_recipe", methods=["GET", "POST"])
 def add_recipe():
     if request.method == "POST":
-        if "user_id" not in session:
-            abort(403)
+        check_csrf()
 
         recipe_creator = session["user_id"]
         recipe_name = request.form["recipe_name"]
@@ -124,6 +123,8 @@ def edit_recipe(recipe_id):
         abort(403)
 
     if request.method == "POST":
+        check_csrf()
+        
         recipe_name = request.form["recipe_name"]
         ingredients = request.form["ingredients"].split("\n")
         instructions = request.form["instructions"].split("\n")
@@ -173,6 +174,7 @@ def delete_recipe(recipe_id):
         abort(403)
 
     if request.method == "POST":
+        check_csrf()
         db.execute("DELETE FROM ingredients WHERE recipe_id = ?", [recipe_id])
         db.execute("DELETE FROM instructions WHERE recipe_id = ?", [recipe_id])
         db.execute("DELETE FROM reviews WHERE recipe_id = ?", [recipe_id])
@@ -269,8 +271,8 @@ def login():
         password = request.form["password"]
 
         try:
-            sql = "SELECT password_hash FROM users WHERE username = ?"
-            password_hash = db.query(sql, [username])[0][0]
+            sql = "SELECT id, password_hash FROM users WHERE username = ?"
+            user_id, password_hash = db.query(sql, [username])[0]
         except:
             result = "VIRHE: väärä tunnus tai salasana"
             return render_template("login.html", result=result, username=username)
@@ -282,8 +284,8 @@ def login():
 
         if check_password_hash(password_hash, password):
             session["username"] = username
-            user_id = db.query("SELECT id FROM users WHERE username = ?", [username])[0][0]
             session["user_id"] = user_id
+            session["csrf_token"] = secrets.token_hex(16)
             return redirect("/")
         else:
             result = "VIRHE: väärä tunnus tai salasana"
@@ -297,5 +299,13 @@ def logout():
     if "user_id" in session:
         del session["user_id"]
         del session["username"]
+        del session["csrf_token"]
     
     return redirect("/")
+
+
+def check_csrf():
+    if "csrf_token" not in session:
+        abort(403)
+    if request.form["csrf_token"] != session["csrf_token"]:
+        abort(403)

@@ -5,6 +5,7 @@
   <h2>Reseptin muokkaus</h2>
 
   <form action="/edit_recipe/{{ recipe_id }}" method="POST">
+    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <p>
       Reseptin nimi:<br>
       <input type="text" name="recipe_name" value="{{ recipe_name }}"/>
