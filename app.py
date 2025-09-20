@@ -1,9 +1,12 @@
+import secrets
+# import sqlite3
+
 from flask import Flask
 from flask import abort, render_template, redirect, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
-# import sqlite3
-import secrets
-import config, db
+
+import config
+import db
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
@@ -42,7 +45,8 @@ def recipe(recipe_id):
     if request.method == "POST":
         check_csrf()
         if not allow_review:
-            return ("Et voi arvioida tätä reseptiä, koska olet jo arvioinut sen tai kyse on omasta reseptistäsi.")
+            return "Et voi arvioida tätä reseptiä, koska olet jo arvioinut sen tai kyse on "\
+                "omasta reseptistäsi."
 
         grade = request.form["grade"]
         comment = request.form["comment"]
@@ -124,7 +128,7 @@ def edit_recipe(recipe_id):
 
     if request.method == "POST":
         check_csrf()
-        
+
         recipe_name = request.form["recipe_name"]
         ingredients = request.form["ingredients"].split("\n")
         instructions = request.form["instructions"].split("\n")
@@ -157,7 +161,8 @@ def edit_recipe(recipe_id):
     instructions = db.query(sql, [recipe_id])
     instructions = "\n".join(instruction[0] for instruction in instructions)
 
-    return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name, ingredients=ingredients, instructions=instructions)
+    return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name,\
+                            ingredients=ingredients, instructions=instructions)
 
 
 @app.route("/delete_recipe/<int:recipe_id>", methods=["GET", "POST"])
@@ -248,7 +253,7 @@ def register():
         if password1 == "":
             result = "VIRHE: salasana on pakollinen"
             return render_template("register.html", result=result, username=username)
-        
+
         password_hash = generate_password_hash(password1)
 
         try:
@@ -300,7 +305,7 @@ def logout():
         del session["user_id"]
         del session["username"]
         del session["csrf_token"]
-    
+
     return redirect("/")
 
 

@@ -24,8 +24,8 @@ def executemany(sql, params=[]):
     con.close()
 
 def last_insert_id():
-    return g.last_insert_id    
-    
+    return g.last_insert_id
+
 def query(sql, params=[]):
     con = get_connection()
     result = con.execute(sql, params).fetchall()
