@@ -18,6 +18,12 @@
       Ohjeet (kirjoita jokainen askel omalle rivilleen):<br>
       <textarea name="instructions" rows="5" cols="40"></textarea>
     </p>
+    <p>
+      Valitse soveltuvat luokat:<br>
+      {% for category in categories %}
+        <input type="checkbox" name="category" value="{{ category.id }}"/>{{ category.category_name }}<br>
+      {% endfor %}
+    </p>
     <input type="submit" value="Lisää" />
   </form>
   

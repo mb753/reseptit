@@ -89,6 +89,7 @@ def add_recipe():
         recipe_name = request.form["recipe_name"]
         ingredients = request.form["ingredients"].split("\n")
         instructions = request.form["instructions"].split("\n")
+        categories = request.form.getlist("category")
 
         if recipe_name == "":
             recipe_name = "Nimetön resepti"
@@ -105,13 +106,20 @@ def add_recipe():
         parameters = [(instruction.strip(), recipe_id) for instruction in instructions]
         db.executemany(sql, parameters)
 
+        sql = "INSERT INTO recipe_categories (recipe_id, category_id) VALUES (?, ?)"
+        parameters = [(recipe_id, category) for category in categories]
+        db.executemany(sql, parameters)
+
         return redirect("/")
 
-    return render_template("add_recipe.html")
+    sql = "SELECT id, category_name FROM category_names"
+    categories = db.query(sql)
+
+    return render_template("add_recipe.html", categories=categories)
 
 
-# add_recipe and edit_recipe probably should be combined somehow,
-# as they have a lot in common
+# add_recipe() and edit_recipe() as well as the corresponding HTML pages
+# should be combined somehow, as they have a lot in common
 
 @app.route("/edit_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def edit_recipe(recipe_id):
@@ -132,6 +140,7 @@ def edit_recipe(recipe_id):
         recipe_name = request.form["recipe_name"]
         ingredients = request.form["ingredients"].split("\n")
         instructions = request.form["instructions"].split("\n")
+        categories = request.form.getlist("category")
 
         if recipe_name == "":
             recipe_name = "Nimetön resepti"
@@ -151,6 +160,12 @@ def edit_recipe(recipe_id):
         parameters = [(instruction.strip(), recipe_id) for instruction in instructions]
         db.executemany(sql, parameters)
 
+        sql = "DELETE FROM recipe_categories WHERE recipe_id = ?"
+        db.execute(sql, [recipe_id])
+        sql = "INSERT INTO recipe_categories (recipe_id, category_id) VALUES (?, ?)"
+        parameters = [(recipe_id, category) for category in categories]
+        db.executemany(sql, parameters)
+
         return redirect("/recipe/" + str(recipe_id))
 
     sql = "SELECT ingredient FROM ingredients WHERE recipe_id = ?"
@@ -161,8 +176,16 @@ def edit_recipe(recipe_id):
     instructions = db.query(sql, [recipe_id])
     instructions = "\n".join(instruction[0] for instruction in instructions)
 
+    sql = "SELECT id, category_name FROM category_names"
+    categories = db.query(sql)
+
+    sql = "SELECT category_id FROM recipe_categories WHERE recipe_id = ?"
+    recipe_categories = db.query(sql, [recipe_id])
+    recipe_categories = [category[0] for category in recipe_categories]
+
     return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name,\
-                            ingredients=ingredients, instructions=instructions)
+        ingredients=ingredients, instructions=instructions, categories=categories,\
+        recipe_categories=recipe_categories)
 
 
 @app.route("/delete_recipe/<int:recipe_id>", methods=["GET", "POST"])

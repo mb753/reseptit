@@ -18,7 +18,13 @@
       Ohjeet (kirjoita jokainen askel omalle rivilleen):<br>
       <textarea name="instructions" rows="5" cols="40">{{ instructions }}</textarea>
     </p>
+    <p>
+      Valitse soveltuvat luokat:<br>
+      {% for category in categories %}
+        <input type="checkbox" name="category" value="{{ category.id }}" {% if category.id in recipe_categories %}checked{% endif %}/>{{ category.category_name }}<br>
+      {% endfor %}
+    </p>
     <input type="submit" value="Tallenna" />
   </form>
-  
+
 {% endblock %}
