@@ -94,6 +94,8 @@ def add_recipe():
         if recipe_name == "":
             recipe_name = "Nimetön resepti"
 
+        # figure out how to do the following in one transaction
+
         sql = "INSERT INTO recipes (title, user_id) VALUES (?, ?)"
         db.execute(sql, [recipe_name, recipe_creator])
         recipe_id = db.last_insert_id()
@@ -144,6 +146,8 @@ def edit_recipe(recipe_id):
 
         if recipe_name == "":
             recipe_name = "Nimetön resepti"
+
+        # figure out how to do the following in one transaction
 
         sql = "UPDATE recipes SET title = ? WHERE id = ?"
         db.execute(sql, [recipe_name, recipe_id])
@@ -203,6 +207,7 @@ def delete_recipe(recipe_id):
 
     if request.method == "POST":
         check_csrf()
+        # figure out how to do the following in one transaction
         db.execute("DELETE FROM ingredients WHERE recipe_id = ?", [recipe_id])
         db.execute("DELETE FROM instructions WHERE recipe_id = ?", [recipe_id])
         db.execute("DELETE FROM reviews WHERE recipe_id = ?", [recipe_id])
