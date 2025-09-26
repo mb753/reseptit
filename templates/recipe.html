@@ -66,8 +66,8 @@
       <form action="/recipe/{{ recipe.id }}" method="POST">
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
         <p>
-          Arvosana:
-          <select name="grade">
+          <label for="grade">Arvosana</label>:
+          <select id="grade" name="grade">
             <option value="5">5</option>
             <option value="4">4</option>
             <option value="3">3</option>
@@ -76,8 +76,8 @@
           </select>
         </p>
         <p>
-          Kommentti:<br>
-          <input type="text" name="comment" />
+          <label for="comment">Kommentti</label>:<br>
+          <input type="text" id="comment" name="comment" />
         </p>
         <input type="submit" value="Lähetä" />
       </form>

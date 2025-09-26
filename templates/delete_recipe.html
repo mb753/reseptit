@@ -8,8 +8,12 @@
 
   <form action="/delete_recipe/{{ recipe_id }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
-    <p>Oletko varma? Poiston jälkeen resepti ei ole enää palautettavissa.</p>
-    <input type="submit" value="Poista" />
+    <p>
+      <label for="submit">Oletko varma? Poiston jälkeen resepti ei ole enää palautettavissa.</label>
+    </p>
+    <p>
+      <input type="submit" id="submit" value="Poista" />
+    </p>
   </form>
 
 {% endblock %}

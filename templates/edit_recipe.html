@@ -7,21 +7,21 @@
   <form action="/edit_recipe/{{ recipe_id }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <p>
-      Reseptin nimi:<br>
-      <input type="text" name="recipe_name" value="{{ recipe_name }}"/>
+      <label for="recipe_name">Reseptin nimi</label>:<br>
+      <input type="text" id="recipe_name" name="recipe_name" value="{{ recipe_name }}"/>
     </p>    
     <p>
-      Ainekset (kirjoita jokainen aines omalle rivilleen):<br>
-      <textarea name="ingredients" rows="5" cols="40">{{ ingredients }}</textarea>
+      <label for="ingredients">Ainekset (kirjoita jokainen aines omalle rivilleen)</label>:<br>
+      <textarea id="ingredients" name="ingredients" rows="5" cols="40">{{ ingredients }}</textarea>
     </p>
     <p>
-      Ohjeet (kirjoita jokainen askel omalle rivilleen):<br>
-      <textarea name="instructions" rows="5" cols="40">{{ instructions }}</textarea>
+      <label for="instructions">Ohjeet (kirjoita jokainen askel omalle rivilleen)</label>:<br>
+      <textarea id="instructions" name="instructions" rows="5" cols="40">{{ instructions }}</textarea>
     </p>
     <p>
-      Valitse soveltuvat luokat:<br>
+      <label for="category">Valitse soveltuvat luokat</label>:<br>
       {% for category in categories %}
-        <input type="checkbox" name="category" value="{{ category.id }}" {% if category.id in recipe_categories %}checked{% endif %}/>{{ category.category_name }}<br>
+        <input type="checkbox" id="category" name="category" value="{{ category.id }}" {% if category.id in recipe_categories %}checked{% endif %}/>{{ category.category_name }}<br>
       {% endfor %}
     </p>
     <input type="submit" value="Tallenna" />
