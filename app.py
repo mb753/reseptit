@@ -207,10 +207,6 @@ def delete_recipe(recipe_id):
 
     if request.method == "POST":
         check_csrf()
-        # figure out how to do the following in one transaction
-        db.execute("DELETE FROM ingredients WHERE recipe_id = ?", [recipe_id])
-        db.execute("DELETE FROM instructions WHERE recipe_id = ?", [recipe_id])
-        db.execute("DELETE FROM reviews WHERE recipe_id = ?", [recipe_id])
         db.execute("DELETE FROM recipes WHERE id = ?", [recipe_id])
 
         return redirect("/")
