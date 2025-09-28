@@ -48,3 +48,20 @@ $ flask run
 ```
 
 Nyt voit avata sovelluksen selaimessa osoitteessa `127.0.0.1:5000`.
+
+## Testaus suurella datamäärällä
+
+Korvataksesi tietokannan sisällön hyvin suurella määrällä testidataa:
+* Varmista ensin, että tietokanta tauluineen on olemassa (luontiohjeet ylempänä).
+* Suorita sen jälkeen skripti `seed.py`. Varaudu siihen, että skriptin suoritus kestää kauan.
+
+Etusivun, reseptisivujen ja käyttäjäsivujen pitäisi tämän jälkeen edelleen avautua nopeasti tietokannassa olevien indeksien ansiosta.
+
+Jos haluat, että terminaaliin tulostuu tieto siitä, kuinka kauan kunkin sivun avautuminen kesti, poista tiedostosta `app.py` funktioiden `before_request()` ja `after_request()` kommentointi.
+
+Jos haluat kokeilla, kuinka paljon hitaampaa toiminta on ilman tietokannan indeksejä, avaa tietokantatiedosto SQLite-tulkissa (`$ sqlite3 database.db`) ja poista kukin indeksi komennolla `DROP INDEX indeksin_nimi;`. Voit katsoa indeksien nimet tiedostosta `schema.sql` tai tulkista komennolla `.indices`.
+
+Omalla koneellani, suurta testidataa käytettäessä, indeksit vaikuttivat näin:
+* tietokannan koko ilman indeksejä n. 900 Mt, indeksien kanssa n. 1,4 Gt
+* reseptisivun avaus ilman indeksejä n. 2 sek., indeksien kanssa n. 0 sek.
+* käyttäjäsivun avaus ilman indeksejä n. 0,75 sek., indeksien kanssa n. 0 sek.

@@ -1,9 +1,10 @@
 import math
 import secrets
 # import sqlite3
+import time
 
 from flask import Flask
-from flask import abort, render_template, redirect, request, session
+from flask import abort, g, render_template, redirect, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 
 import config
@@ -11,6 +12,20 @@ import db
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+
+
+# Uncomment the following two functions to measure the duration
+# of page requests and print the measurements to the terminal.
+
+# @app.before_request
+# def before_request():
+#     g.start_time = time.time()
+
+# @app.after_request
+# def after_request(response):
+#     elapsed_time = round(time.time() - g.start_time, 2)
+#     print("elapsed time:", elapsed_time, "s")
+#     return response
 
 
 @app.route("/")
