@@ -1,12 +1,19 @@
+-- Database schema. Some potential expansions as comments.
+
 CREATE TABLE users (
     id INTEGER PRIMARY KEY,
     username TEXT UNIQUE,
     password_hash TEXT
+    -- , join_date TEXT,
+    -- image BLOB
 );
 
 CREATE TABLE recipes (
     id INTEGER PRIMARY KEY,
     title TEXT,
+    -- servings INTEGER,
+    -- intro TEXT,
+    -- image BLOB,
     user_id INTEGER REFERENCES users
 );
 
@@ -24,12 +31,15 @@ CREATE TABLE recipe_categories (
 CREATE TABLE ingredients (
     id INTEGER PRIMARY KEY,
     ingredient TEXT,
+    -- quantity REAL,
+    -- unit TEXT,
     recipe_id INTEGER REFERENCES recipes ON DELETE CASCADE
 );
 
 CREATE TABLE instructions (
     id INTEGER PRIMARY KEY,
     instruction TEXT,
+    -- image BLOB
     recipe_id INTEGER REFERENCES recipes ON DELETE CASCADE
 );
 

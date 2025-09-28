@@ -1,10 +1,8 @@
-DELETE FROM users;
+PRAGMA foreign_keys = ON;
+
 DELETE FROM recipes;
+DELETE FROM users;
 DELETE FROM category_names;
-DELETE FROM recipe_categories;
-DELETE FROM ingredients;
-DELETE FROM instructions;
-DELETE FROM reviews;
 
 INSERT INTO users (username) VALUES ('Chef de cuisine');
 INSERT INTO users (username) VALUES ('Monsieur Michelin');
