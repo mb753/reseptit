@@ -1,3 +1,4 @@
+import math
 import secrets
 # import sqlite3
 
@@ -13,12 +14,27 @@ app.secret_key = config.secret_key
 
 
 @app.route("/")
-def index():
+@app.route("/<int:page>")
+def index(page=1):
+    page_size = 10
+    recipe_count = db.query("SELECT COUNT(*) FROM recipes")[0][0]
+    page_count = math.ceil(recipe_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+
     sql = """SELECT r.title, r.id, u.username, u.id AS user_id
              FROM recipes r, users u
-             WHERE r.user_id = u.id"""
-    recipes = db.query(sql)
-    return render_template("index.html", recipes=recipes)
+             WHERE r.user_id = u.id
+             LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    recipes = db.query(sql, [limit, offset])
+
+    return render_template("index.html", recipes=recipes, page=page, page_count=page_count)
 
 
 @app.route("/recipe/<int:recipe_id>", methods=["GET", "POST"])
