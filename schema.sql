@@ -50,3 +50,11 @@ CREATE TABLE reviews (
     recipe_id INTEGER REFERENCES recipes ON DELETE CASCADE,
     user_id INTEGER REFERENCES users
 );
+
+CREATE INDEX idx_recipe_ingredients ON ingredients (recipe_id);
+CREATE INDEX idx_recipe_instructions ON instructions (recipe_id);
+CREATE INDEX idx_recipe_reviews ON reviews (recipe_id);
+CREATE INDEX idx_recipe_categories ON recipe_categories (recipe_id);
+
+CREATE INDEX idx_user_recipes ON recipes (user_id);
+CREATE INDEX idx_user_reviews ON reviews (user_id);
