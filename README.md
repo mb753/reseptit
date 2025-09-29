@@ -59,7 +59,7 @@ Etusivun, reseptisivujen ja käyttäjäsivujen pitäisi tämän jälkeen edellee
 
 Jos haluat, että terminaaliin tulostuu tieto siitä, kuinka kauan kunkin sivun avautuminen kesti, poista tiedostosta `app.py` funktioiden `before_request()` ja `after_request()` kommentointi.
 
-Jos haluat kokeilla, kuinka paljon hitaampaa toiminta on ilman tietokannan indeksejä, avaa tietokantatiedosto SQLite-tulkissa (`$ sqlite3 database.db`) ja poista kukin indeksi komennolla `DROP INDEX indeksin_nimi;`. Voit katsoa indeksien nimet tiedostosta `schema.sql` tai tulkista komennolla `.indices`.
+Jos haluat kokeilla, kuinka paljon hitaampaa toiminta on ilman tietokannan indeksejä, avaa tietokantatiedosto SQLite-tulkissa (`$ sqlite3 database.db`) ja poista kukin indeksi komennolla `DROP INDEX indeksin_nimi;`. Voit katsoa indeksien nimet tiedostosta `schema.sql` tai tulkista komennolla `.indices`. Suorita lopuksi vielä komento `VACUUM;` jos haluat vapauttaa indeksien viemän levytilan.
 
 Omalla koneellani, suurta testidataa käytettäessä, indeksit vaikuttivat näin:
 * tietokannan koko ilman indeksejä n. 900 Mt, indeksien kanssa n. 1,4 Gt
