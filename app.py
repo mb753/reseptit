@@ -112,60 +112,22 @@ def recipe(recipe_id):
 
 
 @app.route("/add_recipe", methods=["GET", "POST"])
-def add_recipe():
-    if request.method == "POST":
-        check_csrf()
-
-        recipe_creator = session["user_id"]
-        recipe_name = request.form["recipe_name"]
-        ingredients = request.form["ingredients"].split("\n")
-        instructions = request.form["instructions"].split("\n")
-        categories = request.form.getlist("category")
-
-        if recipe_name == "":
-            recipe_name = "Nimetön resepti"
-
-        # figure out how to do the following in one transaction
-
-        sql = "INSERT INTO recipes (title, user_id) VALUES (?, ?)"
-        db.execute(sql, [recipe_name, recipe_creator])
-        recipe_id = db.last_insert_id()
-
-        sql = "INSERT INTO ingredients (ingredient, recipe_id) VALUES (?, ?)"
-        parameters = [(ingredient.strip(), recipe_id) for ingredient in ingredients]
-        db.executemany(sql, parameters)
-
-        sql = "INSERT INTO instructions (instruction, recipe_id) VALUES (?, ?)"
-        parameters = [(instruction.strip(), recipe_id) for instruction in instructions]
-        db.executemany(sql, parameters)
-
-        sql = "INSERT INTO recipe_categories (recipe_id, category_id) VALUES (?, ?)"
-        parameters = [(recipe_id, category) for category in categories]
-        db.executemany(sql, parameters)
-
-        return redirect("/")
-
-    sql = "SELECT id, category_name FROM category_names"
-    categories = db.query(sql)
-
-    return render_template("add_recipe.html", categories=categories)
-
-
-# add_recipe() and edit_recipe() as well as the corresponding HTML pages
-# should be combined somehow, as they have a lot in common
-
 @app.route("/edit_recipe/<int:recipe_id>", methods=["GET", "POST"])
-def edit_recipe(recipe_id):
-    try:
-        sql = "SELECT title, user_id FROM recipes WHERE id = ?"
-        recipe_name, recipe_creator = db.query(sql, [recipe_id])[0]
-    except:
-        abort(404)
+def edit_recipe(recipe_id=None):
 
     if "user_id" not in session:
         abort(403)
-    if session["user_id"] != recipe_creator:
-        abort(403)
+
+    existing_recipe = recipe_id is not None
+
+    if existing_recipe:
+        try:
+            sql = "SELECT title, user_id FROM recipes WHERE id = ?"
+            recipe_name, recipe_creator = db.query(sql, [recipe_id])[0]
+        except:
+            abort(404)
+        if session["user_id"] != recipe_creator:
+            abort(403)
 
     if request.method == "POST":
         check_csrf()
@@ -180,8 +142,14 @@ def edit_recipe(recipe_id):
 
         # figure out how to do the following in one transaction
 
-        sql = "UPDATE recipes SET title = ? WHERE id = ?"
-        db.execute(sql, [recipe_name, recipe_id])
+        if not existing_recipe:
+            recipe_creator = session["user_id"]
+            sql = "INSERT INTO recipes (title, user_id) VALUES (?, ?)"
+            db.execute(sql, [recipe_name, recipe_creator])
+            recipe_id = db.last_insert_id()
+        else:
+            sql = "UPDATE recipes SET title = ? WHERE id = ?"
+            db.execute(sql, [recipe_name, recipe_id])
 
         sql = "DELETE FROM ingredients WHERE recipe_id = ?"
         db.execute(sql, [recipe_id])
@@ -203,24 +171,29 @@ def edit_recipe(recipe_id):
 
         return redirect("/recipe/" + str(recipe_id))
 
-    sql = "SELECT ingredient FROM ingredients WHERE recipe_id = ?"
-    ingredients = db.query(sql, [recipe_id])
-    ingredients = "\n".join(ingredient[0] for ingredient in ingredients)
+    if request.method == "GET":
 
-    sql = "SELECT instruction FROM instructions WHERE recipe_id = ?"
-    instructions = db.query(sql, [recipe_id])
-    instructions = "\n".join(instruction[0] for instruction in instructions)
+        sql = "SELECT id, category_name FROM category_names"
+        categories = db.query(sql)
 
-    sql = "SELECT id, category_name FROM category_names"
-    categories = db.query(sql)
+        if not existing_recipe:
+            return render_template("edit_recipe.html", categories=categories)
 
-    sql = "SELECT category_id FROM recipe_categories WHERE recipe_id = ?"
-    recipe_categories = db.query(sql, [recipe_id])
-    recipe_categories = [category[0] for category in recipe_categories]
+        sql = "SELECT ingredient FROM ingredients WHERE recipe_id = ?"
+        ingredients = db.query(sql, [recipe_id])
+        ingredients = "\n".join(ingredient[0] for ingredient in ingredients)
 
-    return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name,\
-        ingredients=ingredients, instructions=instructions, categories=categories,\
-        recipe_categories=recipe_categories)
+        sql = "SELECT instruction FROM instructions WHERE recipe_id = ?"
+        instructions = db.query(sql, [recipe_id])
+        instructions = "\n".join(instruction[0] for instruction in instructions)
+
+        sql = "SELECT category_id FROM recipe_categories WHERE recipe_id = ?"
+        recipe_categories = db.query(sql, [recipe_id])
+        recipe_categories = [category[0] for category in recipe_categories]
+
+        return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe_name,\
+            ingredients=ingredients, instructions=instructions, categories=categories,\
+            recipe_categories=recipe_categories)
 
 
 @app.route("/delete_recipe/<int:recipe_id>", methods=["GET", "POST"])
