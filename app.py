@@ -1,10 +1,8 @@
 import math
 import secrets
 import sqlite3
-import time
 
-from flask import Flask
-from flask import abort, g, render_template, redirect, request, session
+from flask import Flask, abort, render_template, redirect, request, session
 
 import config
 import recipes
@@ -15,8 +13,11 @@ app = Flask(__name__)
 app.secret_key = config.secret_key
 
 
-# Uncomment the following two functions to measure the duration
-# of page requests and print the measurements to the terminal.
+# Uncomment the following two functions and their imports to measure the
+# duration of page requests and print the measurements to the terminal.
+
+# import time
+# from flask import g
 
 # @app.before_request
 # def before_request():
