@@ -2,18 +2,18 @@
 
 {% block content %}
 
-  {% if recipe_id %}
+  {% if recipe %}
     <h2>Reseptin muokkaus</h2>
   {% else %}
     <h2>Reseptin lisäys</h2>
   {% endif %}
 
-  <form {% if recipe_id %}action="/edit_recipe/{{ recipe_id }}"{% else %}action="/add_recipe"{% endif %} method="POST">
+  <form {% if recipe %}action="/edit_recipe/{{ recipe.id }}"{% else %}action="/add_recipe"{% endif %} method="POST">
 
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <p>
       <label for="recipe_name">Reseptin nimi</label>:<br>
-      <input type="text" id="recipe_name" name="recipe_name" value="{{ recipe_name }}"/>
+      <input type="text" id="recipe_name" name="recipe_name" {% if recipe %}value="{{ recipe.title }}"{% endif %}/>
     </p>    
     <p>
       <label for="ingredients">Ainekset (kirjoita jokainen aines omalle rivilleen)</label>:<br>

@@ -2,7 +2,7 @@ import math
 import secrets
 import sqlite3
 
-from flask import Flask, abort, render_template, redirect, request, session
+from flask import Flask, abort, redirect, render_template, request, session
 
 import config
 import recipes
@@ -75,22 +75,23 @@ def show_recipe(recipe_id):
 
         return redirect("/recipe/" + str(recipe_id))
 
-    grades = [review["grade"] for review in reviews]
-    grade_count = len(grades)
-    if grade_count > 0:
-        mean_grade = f"{round(sum(grades) / grade_count, 1)} / 5"
-    else:
-        mean_grade = "n/a"
+    if request.method == "GET":
+        grades = [review["grade"] for review in reviews]
+        grade_count = len(grades)
+        if grade_count > 0:
+            mean_grade = f"{round(sum(grades) / grade_count, 1)} / 5"
+        else:
+            mean_grade = "n/a"
 
-    ingredients = recipes.get_ingredients(recipe_id)
-    instructions = recipes.get_instructions(recipe_id)
-    categories = recipes.get_categories(recipe_id)
-    categories = " | ".join(category["name"] for category in categories)
+        ingredients = recipes.get_ingredients(recipe_id)
+        instructions = recipes.get_instructions(recipe_id)
+        categories = recipes.get_categories(recipe_id)
+        categories = " | ".join(category["name"] for category in categories)
 
-    return render_template("recipe.html", recipe=recipe, ingredients=ingredients,\
-        instructions=instructions, reviews=reviews, reviewers=reviewers,\
-        allow_review=allow_review, mean_grade=mean_grade, grade_count=grade_count,\
-        categories=categories)
+        return render_template("recipe.html", recipe=recipe, ingredients=ingredients,
+            instructions=instructions, reviews=reviews, reviewers=reviewers,
+            allow_review=allow_review, mean_grade=mean_grade, grade_count=grade_count,
+            categories=categories)
 
 
 @app.route("/add_recipe", methods=["GET", "POST"])
@@ -151,9 +152,9 @@ def edit_recipe(recipe_id=None):
         recipe_categories = recipes.get_categories(recipe_id)
         recipe_categories = [category["id"] for category in recipe_categories]
 
-        return render_template("edit_recipe.html", recipe_id=recipe_id, recipe_name=recipe["title"],\
-            ingredients=ingredients, instructions=instructions, categories=categories,\
-            recipe_categories=recipe_categories)
+        return render_template("edit_recipe.html", recipe=recipe, ingredients=ingredients,
+                                instructions=instructions, categories=categories,
+                                recipe_categories=recipe_categories)
 
 
 @app.route("/delete_recipe/<int:recipe_id>", methods=["GET", "POST"])
@@ -172,7 +173,8 @@ def delete_recipe(recipe_id):
         recipes.delete(recipe_id)
         return redirect("/")
 
-    return render_template("/delete_recipe.html", recipe_name=recipe["title"], recipe_id=recipe_id)
+    if request.method == "GET":
+        return render_template("/delete_recipe.html", recipe=recipe)
 
 
 @app.route("/search", methods=["GET", "POST"])
@@ -230,7 +232,8 @@ def register():
 
         return render_template("register.html", result=f"Tunnus {username} luotu")
 
-    return render_template("register.html")
+    if request.method == "GET":
+        return render_template("register.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -250,7 +253,8 @@ def login():
 
         return redirect("/")
 
-    return render_template("login.html")
+    if request.method == "GET":
+        return render_template("login.html")
 
 
 @app.route("/logout")

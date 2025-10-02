@@ -4,9 +4,9 @@
 
   <h2>Reseptin poisto</h2>
 
-    <p>Poistettava resepti: {{ recipe_name }}</p>
+    <p>Poistettava resepti: {{ recipe.title }}</p>
 
-  <form action="/delete_recipe/{{ recipe_id }}" method="POST">
+  <form action="/delete_recipe/{{ recipe.id }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <p>
       <label for="submit">Oletko varma? Poiston jälkeen resepti ei ole enää palautettavissa.</label>
