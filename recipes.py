@@ -19,7 +19,7 @@ def get(recipe_id):
                  FROM recipes r, users u
                  WHERE r.id = ? AND r.user_id = u.id"""
         return db.query(sql, [recipe_id])[0]
-    except:
+    except IndexError:      # not found
         return None
 
 

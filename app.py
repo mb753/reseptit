@@ -1,5 +1,6 @@
 import math
 import secrets
+import sqlite3
 import time
 
 from flask import Flask
@@ -214,7 +215,14 @@ def register():
             result = "VIRHE: salasana on pakollinen"
             return render_template("register.html", result=result, username=username)
 
-        user_id = users.create_user(username, password1)
+        try:
+            user_id = users.create_user(username, password1)
+        except sqlite3.OperationalError:
+            # Error message "sqlite3.OperationalError: database is locked" may appear
+            # after having repeatedly tried to create a user that already exists.
+            result = "VIRHE: jokin meni pieleen, yritä vähän ajan kuluttua uudestaan."
+            return render_template("register.html", result=result, username=username)
+
         if user_id is None:
             result = "VIRHE: tunnus on jo varattu"
             return render_template("register.html", result=result, username=username)
