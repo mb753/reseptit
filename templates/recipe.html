@@ -5,7 +5,13 @@
   <h2>{{ recipe.title }}</h2>
 
   <p>
-    Luokitus: {{categories }}
+    Luokitus:
+    {% for category in categories %}
+      <a href="/{{ category.id }}/1">{{ category.name }}</a>
+      {% if not loop.last %}
+        |
+      {% endif %}
+    {% endfor %}
   </p>
 
   {% if session.username == recipe.username %}

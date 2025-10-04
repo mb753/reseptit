@@ -100,7 +100,6 @@ def show_recipe(recipe_id):
         ingredients = recipes.get_ingredients(recipe_id)
         instructions = recipes.get_instructions(recipe_id)
         categories = recipes.get_categories(recipe_id)
-        categories = " | ".join(category["name"] for category in categories)
 
         return render_template("recipe.html", recipe=recipe, ingredients=ingredients,
             instructions=instructions, reviews=reviews, reviewers=reviewers,
