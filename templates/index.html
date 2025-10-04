@@ -7,6 +7,23 @@
   <h3>Selaa reseptejä</h3>
 
   <p>
+    <form action="/" method="POST">
+      <p>
+        <label for="category">Rajaa luokan mukaan</label>:
+        <select id="category" name="category">
+          <option value="0" {% if selected_category == 0 %}selected{% endif %}>Kaikki</option>
+          {% for category in categories %}
+            <option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>{{ category.category_name }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="Rajaa" />
+      </p>
+    </form>
+  </p>
+  
+  <p>Löytyi {{ recipe_count }} reseptiä.</p>
+
+  <p>
     <ul>
       {% for recipe in recipes %}
         <li>
@@ -17,9 +34,9 @@
   </p>
 
   <p>
-    <a href="/{{ page - 1 }}">&lt;&lt;</a>
+    <a href="/{{ selected_category }}/{{ page - 1 }}">&lt;&lt;</a>
     Sivu {{ page }}/{{ page_count }}
-    <a href="/{{ page + 1 }}">&gt;&gt;</a>
+    <a href="/{{ selected_category }}/{{ page + 1 }}">&gt;&gt;</a>
   </p>
 
   <h3>Lisää resepti</h3>

@@ -1,17 +1,26 @@
 import db
 
 
-def count():
-    return db.query("SELECT COUNT(*) FROM recipes")[0][0]
+def count(category=0):
+    if category == 0:   # count all recipes
+        return db.query("SELECT COUNT(*) FROM recipes")[0][0]
+    else:               # count recipes in category
+        return db.query("SELECT COUNT(*) FROM recipe_categories WHERE category_id = ?", [category])[0][0]
 
 
-def get_list(limit=-1, offset=0):
-    sql = """SELECT r.title, r.id, u.username, u.id AS user_id
-             FROM recipes r, users u
-             WHERE r.user_id = u.id
-             LIMIT ? OFFSET ?"""
-    return db.query(sql, [limit, offset])
-
+def get_list(category=0, limit=-1, offset=0):
+    if category == 0:   # list all recipes
+        sql = """SELECT r.title, r.id, u.username, u.id AS user_id
+                 FROM recipes r, users u
+                 WHERE r.user_id = u.id
+                 LIMIT ? OFFSET ?"""
+        return db.query(sql, [limit, offset])
+    else:               # list recipes in category
+        sql = """SELECT r.title, r.id, u.username, u.id AS user_id
+                 FROM recipes r, users u, recipe_categories rc
+                 WHERE r.user_id = u.id AND rc.category_id = ? AND rc.recipe_id = r.id
+                 LIMIT ? OFFSET ?"""
+        return db.query(sql, [category, limit, offset])
 
 def get(recipe_id):
     try:

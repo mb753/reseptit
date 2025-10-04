@@ -30,22 +30,36 @@ app.secret_key = config.secret_key
 #     return response
 
 
-@app.route("/")
-@app.route("/<int:page>")
-def index(page=1):
+@app.route("/", methods=["GET", "POST"])
+@app.route("/<int:category>/")
+def index(category=0):
+    if request.method == "POST":
+        category = int(request.form["category"])
+    return redirect(f"/{category}/{1}")
+
+
+@app.route("/<int:category>/<int:page>")
+def browse(category, page):
+    all_categories = recipes.available_categories()
+    if category not in [cat["id"] for cat in all_categories] + [0]:
+        abort(404)
+
+    recipe_count = recipes.count(category)
     page_size = 10
-    page_count = math.ceil(recipes.count() / page_size)
+    page_count = math.ceil(recipe_count / page_size)
     page_count = max(page_count, 1)
 
     if page < 1:
-        return redirect("/1")
+        return redirect(f"/{category}/1")
     if page > page_count:
-        return redirect("/" + str(page_count))
+        return redirect(f"/{category}/{page_count}")
 
     offset = page_size * (page - 1)
-    recipe_list = recipes.get_list(page_size, offset)
+    recipe_list = recipes.get_list(category, page_size, offset)
 
-    return render_template("index.html", recipes=recipe_list, page=page, page_count=page_count)
+    return render_template("index.html", recipes=recipe_list, recipe_count=recipe_count,
+                           page=page, page_count=page_count, selected_category=category,
+                           categories=all_categories)
 
 
 @app.route("/recipe/<int:recipe_id>", methods=["GET", "POST"])
