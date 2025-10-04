@@ -5,7 +5,6 @@ body {
   background-color: lightcyan;
 }
 
-
 .header {
   background-color: lightyellow;
   /* padding: 1em; */
@@ -14,13 +13,13 @@ body {
   text-align: center;
 }
 
-
 .nav {
   background-color: lightsteelblue;
   padding: 0.5em;
   margin: 0;
   border-left: 1px solid black;
   border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 /* nav styles directly from course material */
@@ -43,15 +42,21 @@ nav li:not(:last-of-type) {
   border-right: 1px solid black;
 }
 
+.notification {
+  background-color: blue;
+  padding: 1em;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+  color: white;
+}
 
 .content {
   background-color: lightyellow;
   padding: 1em;
   margin: 0 0 0.5em 0;
-  border: 1px solid black;
-}
-
-
-.notification {
-  color: red;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
 }

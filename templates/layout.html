@@ -10,7 +10,7 @@
 
   <div class="header">
     <h1><a href="/">Reseptit</a></h1>
-    <p class="notification">
+    <p style="color: red;">
       *** Reseptisovellus on rakenteilla. ***
     </p>
   </div>
@@ -32,6 +32,12 @@
       </ul>
     </nav>
   </div>
+
+  {% for message in get_flashed_messages() %}
+    <div class="notification">
+      {{ message }}
+    </div>
+  {% endfor %}
 
   <div class="content">
     {% block content %}{% endblock %}

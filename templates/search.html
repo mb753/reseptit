@@ -14,17 +14,17 @@
     <input type="submit" value="Hae" />
   </form>
 
-  {% if recipes %}
-  <h3>Hakutulos</h3>
-  <p>
-    <ul>
-      {% for recipe in recipes %}
-      <li>
-        <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a> (lisännyt {{ recipe.username }})
-      </li>
-      {% endfor %}
-    </ul>
-  </p>
+  {% if recipes != None %}
+    <h3>Tuloksia haulla "{{ search_string }}": {{ recipes | length }}</h3>
+    <p>
+      <ul>
+        {% for recipe in recipes %}
+        <li>
+          <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a> (lisännyt {{ recipe.username }})
+        </li>
+        {% endfor %}
+      </ul>
+    </p>
   {% endif %}
 
 {% endblock %}

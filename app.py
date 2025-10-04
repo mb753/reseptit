@@ -2,7 +2,7 @@ import math
 import secrets
 import sqlite3
 
-from flask import Flask, abort, redirect, render_template, request, session
+from flask import Flask, abort, flash, redirect, render_template, request, session
 
 import config
 import recipes
@@ -193,13 +193,17 @@ def delete_recipe(recipe_id):
 @app.route("/search", methods=["GET", "POST"])
 def search():
     result = None
+    search_string = None
 
     if request.method == "POST":
         search_string = request.form["search_string"]
         if search_string != "":
             result = recipes.search(search_string)
+        else:
+            flash("Anna hakusana")
+            return redirect("/search")
 
-    return render_template("search.html", recipes=result)
+    return render_template("search.html", search_string=search_string, recipes=result)
 
 
 @app.route("/user/<int:user_id>")
@@ -222,28 +226,29 @@ def register():
         password2 = request.form["password2"]
 
         if username == "":
-            result = "VIRHE: anna käyttäjätunnus"
-            return render_template("register.html", result=result)
+            flash("VIRHE: anna käyttäjätunnus")
+            return render_template("register.html")
         if password1 != password2:
-            result = "VIRHE: salasanat eivät ole samat"
-            return render_template("register.html", result=result, username=username)
+            flash("VIRHE: salasanat eivät ole samat")
+            return render_template("register.html", username=username)
         if password1 == "":
-            result = "VIRHE: salasana on pakollinen"
-            return render_template("register.html", result=result, username=username)
+            flash("VIRHE: salasana on pakollinen")
+            return render_template("register.html", username=username)
 
         try:
             user_id = users.create_user(username, password1)
         except sqlite3.OperationalError:
             # Error message "sqlite3.OperationalError: database is locked" may appear
             # after having repeatedly tried to create a user that already exists.
-            result = "VIRHE: jokin meni pieleen, yritä vähän ajan kuluttua uudestaan."
-            return render_template("register.html", result=result, username=username)
+            flash("VIRHE: jokin meni pieleen, yritä vähän ajan kuluttua uudestaan.")
+            return render_template("register.html", username=username)
 
         if user_id is None:
-            result = "VIRHE: tunnus on jo varattu"
-            return render_template("register.html", result=result, username=username)
+            flash("VIRHE: tunnus on jo varattu")
+            return render_template("register.html", username=username)
 
-        return render_template("register.html", result=f"Tunnus {username} luotu")
+        flash(f"Tunnus {username} luotu")
+        return render_template("register.html")
 
     if request.method == "GET":
         return render_template("register.html")
@@ -257,8 +262,8 @@ def login():
 
         user_id = users.check_login(username, password)
         if user_id is None:
-            result = "VIRHE: väärä tunnus tai salasana"
-            return render_template("login.html", result=result, username=username)
+            flash("VIRHE: väärä tunnus tai salasana")
+            return render_template("login.html", username=username)
 
         session["username"] = username
         session["user_id"] = user_id
