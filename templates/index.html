@@ -2,9 +2,7 @@
 
 {% block content %}
 
-  <h2>Etusivu</h2>
-
-  <h3>Selaa reseptejä</h3>
+  <h2>Selaa reseptejä</h2>
 
   <p>
     <form action="/" method="POST">
@@ -38,16 +36,5 @@
     Sivu {{ page }}/{{ page_count }}
     <a href="/{{ selected_category }}/{{ page + 1 }}">&gt;&gt;</a>
   </p>
-
-  <h3>Lisää resepti</h3>
-  {% if session.user_id %}
-    <p>
-      <a href="/add_recipe">Reseptin lisäys</a>
-    </p>
-  {% else %}
-    <p>
-      <a href="/login">Kirjaudu sisään</a> voidaksesi lisätä reseptejä.
-    </p>
-  {% endif %}
 
 {% endblock %}

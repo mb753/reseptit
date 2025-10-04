@@ -2,9 +2,9 @@
 
 {% block content %}
 
-  <h2>Reseptin poisto</h2>
+  <h2>Poista resepti</h2>
 
-    <p>Poistettava resepti: {{ recipe.title }}</p>
+    <p>Poistettava resepti: <a href="/recipe/{{ recipe.id }}">{{ recipe.title }}</a></p>
 
   <form action="/delete_recipe/{{ recipe.id }}" method="POST">
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />

@@ -9,7 +9,7 @@
 <body>
 
   <div class="header">
-    <h1>Reseptit</h1>
+    <h1><a href="/">Reseptit</a></h1>
     <p class="notification">
       *** Reseptisovellus on rakenteilla. ***
     </p>
@@ -18,12 +18,14 @@
   <div class="nav">
     <nav>
       <ul>
-        <li><a href="/">Etusivu</a></li>
-        <li><a href="/search">Haku</a></li>
+        <li><a href="/">Selaa</a></li>
+        <li><a href="/search">Hae</a></li>
         {% if session.user_id %}
+          <li title="Lisää resepti"><a href="/add_recipe">Lisää</a></li>
           <li>Käyttäjä <a href="/user/{{ session.user_id }}">{{ session.username }}</a></li>
           <li><a href="/logout">Kirjaudu ulos</a></li>
         {% else %}
+          <li title="Kirjaudu sisään voidaksesi lisätä reseptejä">Lisää</li>
           <li><a href="/register">Luo tunnus</a></li>
           <li><a href="/login">Kirjaudu sisään</a></li>
         {% endif %}

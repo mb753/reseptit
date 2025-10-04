@@ -3,9 +3,9 @@
 {% block content %}
 
   {% if recipe %}
-    <h2>Reseptin muokkaus</h2>
+    <h2>Muokkaa reseptiä</h2>
   {% else %}
-    <h2>Reseptin lisäys</h2>
+    <h2>Lisää resepti</h2>
   {% endif %}
 
   <form {% if recipe %}action="/edit_recipe/{{ recipe.id }}"{% else %}action="/add_recipe"{% endif %} method="POST">
