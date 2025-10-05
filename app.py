@@ -93,9 +93,9 @@ def show_recipe(recipe_id):
         grades = [review["grade"] for review in reviews]
         grade_count = len(grades)
         if grade_count > 0:
-            mean_grade = f"{round(sum(grades) / grade_count, 1)} / 5"
+            mean_grade = round(sum(grades) / grade_count, 1)
         else:
-            mean_grade = "n/a"
+            mean_grade = None
 
         ingredients = recipes.get_ingredients(recipe_id)
         instructions = recipes.get_instructions(recipe_id)
