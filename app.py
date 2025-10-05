@@ -78,13 +78,20 @@ def show_recipe(recipe_id):
 
     if request.method == "POST":
         check_csrf()
-        if not allow_review:
-            return "Et voi arvioida tätä reseptiä, koska olet jo arvioinut sen tai kyse on "\
-                "omasta reseptistäsi."
+
+        if not allow_review:    # abort(403) seems appropriate, as this situation
+            abort(403)          # cannot arise without manipulation by the user
 
         grade = request.form["grade"]
+        if int(grade) not in [1, 2, 3, 4, 5]:
+            abort(403)
+
         comment = request.form["comment"]
+        if len(comment) > 500:
+            comment = comment[0:500]
+
         user_id = session["user_id"]
+
         recipes.add_review(grade, comment, recipe_id, user_id)
 
         return redirect("/recipe/" + str(recipe_id))
@@ -107,6 +114,16 @@ def show_recipe(recipe_id):
             categories=categories)
 
 
+def make_list(text):
+    result = []
+    text = text.split("\n")
+    for item in text:
+        item = item.strip()
+        if item != "":
+            result.append(item)
+    return result
+
+
 @app.route("/add_recipe", methods=["GET", "POST"])
 @app.route("/edit_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def edit_recipe(recipe_id=None):
@@ -124,15 +141,29 @@ def edit_recipe(recipe_id=None):
     if request.method == "POST":
         check_csrf()
 
-        recipe_name = request.form["recipe_name"]
-        ingredients = request.form["ingredients"].split("\n")
-        instructions = request.form["instructions"].split("\n")
-        categories = request.form.getlist("category")
-
+        recipe_name = request.form["recipe_name"].strip()
         if recipe_name == "":
             recipe_name = "Nimetön resepti"
-        ingredients = [ingredient.strip() for ingredient in ingredients]
-        instructions = [instruction.strip() for instruction in instructions]
+        if len(recipe_name) > 100:
+            recipe_name = recipe_name[0:100]
+
+        ingredients = request.form["ingredients"]
+        if len(ingredients) > 5000:
+            ingredients = ingredients[0:5000]
+        ingredients = make_list(ingredients)
+
+        instructions = request.form["instructions"]
+        if len(instructions) > 5000:
+            instructions = instructions[0:5000]
+        instructions = make_list(instructions)
+
+        categories = request.form.getlist("category")
+        available_categories = [cat["id"] for cat in recipes.available_categories()]
+        result = []
+        for category in categories:
+            if int(category) in available_categories:
+                result.append(category)
+        categories = result
 
         # figure out how to do the following in one transaction
 
@@ -223,12 +254,21 @@ def register():
         if username == "":
             flash("VIRHE: anna käyttäjätunnus")
             return render_template("register.html")
+
+        if len(username) > 20:
+            flash("VIRHE: Liian pitkä käyttäjätunnus (max. 20 merkkiä sallittu)")
+            return render_template("register.html", username=username)
+
         if password1 != password2:
             flash("VIRHE: salasanat eivät ole samat")
             return render_template("register.html", username=username)
+
         if password1 == "":
             flash("VIRHE: salasana on pakollinen")
             return render_template("register.html", username=username)
+
+        # In a "real" app, there would also be a minimum length for the password,
+        # as well as further requirements concerning the characters used.
 
         try:
             user_id = users.create_user(username, password1)

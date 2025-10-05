@@ -13,15 +13,15 @@
     <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}" />
     <p>
       <label for="recipe_name">Reseptin nimi</label>:<br>
-      <input type="text" id="recipe_name" name="recipe_name" {% if recipe %}value="{{ recipe.title }}"{% endif %}/>
+      <input type="text" maxlength="100" id="recipe_name" name="recipe_name" {% if recipe %}value="{{ recipe.title }}"{% endif %}/>
     </p>    
     <p>
       <label for="ingredients">Ainekset (kirjoita jokainen aines omalle rivilleen)</label>:<br>
-      <textarea id="ingredients" name="ingredients" rows="5" cols="40">{{ ingredients }}</textarea>
+      <textarea maxlength="5000" id="ingredients" name="ingredients" rows="5" cols="40">{{ ingredients }}</textarea>
     </p>
     <p>
       <label for="instructions">Ohjeet (kirjoita jokainen askel omalle rivilleen)</label>:<br>
-      <textarea id="instructions" name="instructions" rows="5" cols="40">{{ instructions }}</textarea>
+      <textarea maxlength="5000" id="instructions" name="instructions" rows="5" cols="40">{{ instructions }}</textarea>
     </p>
     <p>
       <label for="category">Valitse soveltuvat luokat</label>:<br>
