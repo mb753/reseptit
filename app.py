@@ -111,8 +111,7 @@ def show_recipe(recipe_id):
 @app.route("/edit_recipe/<int:recipe_id>", methods=["GET", "POST"])
 def edit_recipe(recipe_id=None):
 
-    if "user_id" not in session:
-        abort(403)
+    require_login()
 
     existing_recipe = recipe_id is not None
 
@@ -120,8 +119,7 @@ def edit_recipe(recipe_id=None):
         recipe = recipes.get(recipe_id)
         if recipe is None:
             abort(404)
-        if session["user_id"] != recipe["user_id"]:
-            abort(403)
+        require_login(recipe["user_id"])
 
     if request.method == "POST":
         check_csrf()
@@ -176,10 +174,7 @@ def delete_recipe(recipe_id):
     if recipe is None:
         abort(404)
 
-    if "user_id" not in session:
-        abort(403)
-    if session["user_id"] != recipe["user_id"]:
-        abort(403)
+    require_login(recipe["user_id"])
 
     if request.method == "POST":
         check_csrf()
@@ -285,8 +280,16 @@ def logout():
     return redirect("/")
 
 
+def require_login(user_id=None):
+    if "user_id" not in session:
+        abort(403)
+    if user_id:
+        if user_id != session["user_id"]:
+            abort(403)
+
+
 def check_csrf():
-    if "csrf_token" not in session:
+    if ("csrf_token" not in session) or ("csrf_token" not in request.form):
         abort(403)
     if request.form["csrf_token"] != session["csrf_token"]:
         abort(403)
