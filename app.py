@@ -210,6 +210,7 @@ def delete_recipe(recipe_id):
     if request.method == "POST":
         check_csrf()
         recipes.delete(recipe_id)
+        flash(f"Resepti '{recipe['title']}' poistettu")
         return redirect("/")
 
     if request.method == "GET":
