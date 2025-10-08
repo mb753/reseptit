@@ -7,7 +7,7 @@
   <form action="/login" method="POST">
     <p>
       <label for="username">Tunnus</label>:<br />
-      <input type="text" id="username" name="username" {% if username %} value="{{ username }}" {% endif %} />
+      <input type="text" maxlength="20" id="username" name="username" {% if username %} value="{{ username }}" {% endif %} />
     </p>
     <p>
       <label for="password">Salasana</label>:<br />
